@@ -77,7 +77,7 @@ describe('Shopping List', function() {
             res.body.should.be.a('object');
             res.body.should.deep.equal(updated);
           });
-      })
+      });
       done();
   });
 
@@ -96,3 +96,43 @@ describe('Shopping List', function() {
       done();
   });
 });
+
+describe('Recipes', () => {
+  it('should display list of recipes', (done) => {
+    chai.request(server)
+      .get('/recipes')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.json;
+        res.body.should.be.a('array');
+        res.body.length.should.be.at.least(1);
+
+        const expectedKeys = ['name', 'id', 'ingredients'];
+        res.body.forEach((item) => {
+          item.should.be.a('object');
+          item.should.include.keys(expectedKeys);
+        });
+        done();
+      });
+  });
+});
+
+describe('Recipes', () => {
+  it('should add a new user', (done) => {
+     const newUser = {
+          name: 'coffee',
+          ingredients: ['coffee', 'water']
+        }
+    chai.request(server)
+      .post('/recipes')
+      .send(newUser)
+      .end((err, res) => {
+        res.should.be.json;
+        res.should.have.status(201);
+        res.body.should.be.a('object');
+        res.body.should.include.keys('name', 'id', 'ingredients');
+      });
+      done();
+  });
+});
+
